@@ -39,7 +39,8 @@ src/main/java/com/benchmark/
 │   ├── PlainPerson.java        # Manual equals/hashCode with Objects.hash
 │   ├── LombokPerson.java       # @EqualsAndHashCode @Getter @AllArgsConstructor
 │   └── RecordPerson.java       # Java record
-└── HashCodeEqualsBenchmark.java # 9 JMH benchmarks
+├── HashCodeEqualsBenchmark.java # 9 raw hashCode/equals benchmarks
+└── CollectionBenchmark.java    # 12 Set/Map lookup benchmarks (x3 sizes)
 ```
 
 ## Results
@@ -70,13 +71,51 @@ Measured on JDK 25 (OpenJDK Zulu 25+36-LTS), average time in nanoseconds per ope
 | **Plain** | **0.74** |
 | Record | 1.33 |
 
+### Collection Lookups
+
+Real-world performance measured with `HashSet.contains()` and `HashMap.get()`, parameterized across 100, 1000 and 10,000 entries.
+
+#### Set.contains() — hit
+
+| Implementation | 100 | 1,000 | 10,000 |
+|---|---|---|---|
+| **Lombok** | **9.94** | **7.77** | **7.44** |
+| **Record** | **8.59** | **8.66** | **8.43** |
+| Plain | 20.05 | 20.80 | 20.67 |
+
+#### Set.contains() — miss
+
+| Implementation | 100 | 1,000 | 10,000 |
+|---|---|---|---|
+| **Record** | **2.13** | **2.22** | **2.05** |
+| **Lombok** | **2.12** | **2.92** | **2.12** |
+| Plain | 14.48 | 14.25 | 14.28 |
+
+#### Map.get() — hit
+
+| Implementation | 100 | 1,000 | 10,000 |
+|---|---|---|---|
+| **Lombok** | **7.81** | **8.15** | **8.04** |
+| **Record** | **8.53** | **8.67** | **8.52** |
+| Plain | 18.83 | 20.54 | 20.91 |
+
+#### Map.get() — miss
+
+| Implementation | 100 | 1,000 | 10,000 |
+|---|---|---|---|
+| **Record** | **1.98** | **2.02** | **1.99** |
+| **Lombok** | **2.01** | **2.95** | **2.05** |
+| Plain | 13.59 | 13.88 | 14.25 |
+
 ### Key Takeaways
 
-- **`Objects.hash()` is a performance trap** — the varargs array allocation makes it ~9x slower than alternatives.
+- **`Objects.hash()` is a performance trap** — the varargs array allocation makes it ~9x slower than alternatives, and this directly impacts every Set/Map operation.
+- **Plain POJO is 2-7x slower in collection lookups** — the `hashCode()` penalty from `Objects.hash()` dominates real-world performance in hash-based collections.
 - **Lombok and Record are nearly identical for `hashCode()`**, both generating efficient inline computations.
 - **Records got a significant `equals()` optimization in JDK 25** — `equalsTrue` dropped from 1.74 ns (JDK 21) to 1.43 ns.
 - **Records are the best overall choice in modern Java** — excellent performance on both `hashCode()` and `equals()`, with zero boilerplate.
-- **Plain POJO `equals()` with manual short-circuit wins on different objects**, but the `hashCode()` penalty from `Objects.hash()` makes it the worst overall performer for hash-based collections.
+- **Collection size has no impact on lookup time** — performance is stable across 100, 1,000 and 10,000 entries, confirming O(1) HashMap behavior. The difference comes purely from hashCode/equals cost.
+- **Plain POJO `equals()` with manual short-circuit wins on isolated different-object comparisons**, but this advantage is irrelevant in practice since the `hashCode()` cost dominates collection lookups.
 
 ## Tech Stack
 
