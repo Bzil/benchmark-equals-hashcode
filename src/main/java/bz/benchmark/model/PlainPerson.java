@@ -1,4 +1,4 @@
-package com.benchmark.model;
+package bz.benchmark.model;
 
 import java.util.Objects;
 

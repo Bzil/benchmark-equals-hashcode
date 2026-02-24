@@ -1,8 +1,8 @@
-package com.benchmark;
+package bz.benchmark;
 
-import com.benchmark.model.LombokPerson;
-import com.benchmark.model.PlainPerson;
-import com.benchmark.model.RecordPerson;
+import bz.benchmark.model.LombokPerson;
+import bz.benchmark.model.PlainPerson;
+import bz.benchmark.model.RecordPerson;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.OptionsBuilder;

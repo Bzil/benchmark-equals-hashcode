@@ -1,4 +1,4 @@
-package com.benchmark.model;
+package bz.benchmark.model;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
