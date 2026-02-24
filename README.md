@@ -58,23 +58,31 @@ Measured on JDK 25 (OpenJDK Zulu 25+36-LTS), average time in nanoseconds per ope
 | **Commons** | **1.34** | `HashCodeBuilder` append chain |
 | Plain | 11.69 | `Objects.hash()` allocates a varargs `Object[]` |
 
-### equals() — equal objects
+```mermaid
+xychart-beta
+    title "hashCode() — ns/op (lower is better)"
+    x-axis ["Plain", "Lombok", "Record", "Commons"]
+    y-axis "ns/op" 0 --> 13
+    bar [11.69, 1.34, 1.34, 1.34]
+```
 
-| Implementation | ns/op |
-|---|---|
-| **Commons** | **1.07** |
-| **Record** | **1.33** |
-| **Plain** | **1.35** |
-| Lombok | 1.76 |
+### equals()
 
-### equals() — different objects (short-circuit on first field)
+| Implementation | equal objects (ns/op) | different objects (ns/op) |
+|---|---|---|
+| **Commons** | **1.07** | **0.65** |
+| **Record** | **1.33** | 1.21 |
+| **Plain** | **1.35** | **0.67** |
+| Lombok | 1.76 | **0.65** |
 
-| Implementation | ns/op |
-|---|---|
-| **Lombok** | **0.65** |
-| **Commons** | **0.65** |
-| **Plain** | **0.67** |
-| Record | 1.21 |
+```mermaid
+xychart-beta
+    title "equals() — ns/op (lower is better)"
+    x-axis ["Plain", "Lombok", "Record", "Commons"]
+    y-axis "ns/op" 0 --> 2
+    bar "equal objects" [1.35, 1.76, 1.33, 1.07]
+    bar "different objects" [0.67, 0.65, 1.21, 0.65]
+```
 
 ### Collection Lookups
 
@@ -98,6 +106,15 @@ Real-world performance measured with `HashSet.contains()` and `HashMap.get()`, p
 | **Lombok** | **1.99** | **2.67** | **2.00** |
 | Plain | 13.71 | 13.30 | 14.00 |
 
+```mermaid
+xychart-beta
+    title "Set.contains() at 1,000 entries — ns/op (lower is better)"
+    x-axis ["Plain", "Lombok", "Record", "Commons"]
+    y-axis "ns/op" 0 --> 22
+    bar "hit" [21.45, 7.48, 7.98, 8.19]
+    bar "miss" [13.30, 2.67, 1.99, 1.93]
+```
+
 #### Map.get() — hit
 
 | Implementation | 100 | 1,000 | 10,000 |
@@ -115,6 +132,15 @@ Real-world performance measured with `HashSet.contains()` and `HashMap.get()`, p
 | **Commons** | **2.08** | **1.89** | **1.82** |
 | **Lombok** | **1.91** | **2.63** | **1.87** |
 | Plain | 17.26 | 15.70 | 15.79 |
+
+```mermaid
+xychart-beta
+    title "Map.get() at 1,000 entries — ns/op (lower is better)"
+    x-axis ["Plain", "Lombok", "Record", "Commons"]
+    y-axis "ns/op" 0 --> 21
+    bar "hit" [19.84, 7.45, 8.03, 8.18]
+    bar "miss" [15.70, 2.63, 1.88, 1.89]
+```
 
 ### Key Takeaways
 
