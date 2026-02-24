@@ -1,0 +1,15 @@
+dontinline,*.*_all_jmhStub
+dontinline,*.*_avgt_jmhStub
+dontinline,*.*_sample_jmhStub
+dontinline,*.*_ss_jmhStub
+dontinline,*.*_thrpt_jmhStub
+inline,com/benchmark/HashCodeEqualsBenchmark.lombokEqualsFalse
+inline,com/benchmark/HashCodeEqualsBenchmark.lombokEqualsTrue
+inline,com/benchmark/HashCodeEqualsBenchmark.lombokHashCode
+inline,com/benchmark/HashCodeEqualsBenchmark.plainEqualsFalse
+inline,com/benchmark/HashCodeEqualsBenchmark.plainEqualsTrue
+inline,com/benchmark/HashCodeEqualsBenchmark.plainHashCode
+inline,com/benchmark/HashCodeEqualsBenchmark.recordEqualsFalse
+inline,com/benchmark/HashCodeEqualsBenchmark.recordEqualsTrue
+inline,com/benchmark/HashCodeEqualsBenchmark.recordHashCode
+inline,com/benchmark/HashCodeEqualsBenchmark.setup
