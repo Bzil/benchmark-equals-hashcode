@@ -1,5 +1,6 @@
 package bz.benchmark;
 
+import bz.benchmark.model.CommonsPerson;
 import bz.benchmark.model.LombokPerson;
 import bz.benchmark.model.PlainPerson;
 import bz.benchmark.model.RecordPerson;
@@ -27,10 +28,12 @@ public class CollectionBenchmark {
     private Set<PlainPerson> plainSet;
     private Set<LombokPerson> lombokSet;
     private Set<RecordPerson> recordSet;
+    private Set<CommonsPerson> commonsSet;
 
     private Map<PlainPerson, Integer> plainMap;
     private Map<LombokPerson, Integer> lombokMap;
     private Map<RecordPerson, Integer> recordMap;
+    private Map<CommonsPerson, Integer> commonsMap;
 
     private PlainPerson plainHit;
     private PlainPerson plainMiss;
@@ -38,15 +41,19 @@ public class CollectionBenchmark {
     private LombokPerson lombokMiss;
     private RecordPerson recordHit;
     private RecordPerson recordMiss;
+    private CommonsPerson commonsHit;
+    private CommonsPerson commonsMiss;
 
     @Setup
     public void setup() {
         plainSet = new HashSet<>();
         lombokSet = new HashSet<>();
         recordSet = new HashSet<>();
+        commonsSet = new HashSet<>();
         plainMap = new HashMap<>();
         lombokMap = new HashMap<>();
         recordMap = new HashMap<>();
+        commonsMap = new HashMap<>();
 
         for (int i = 0; i < size; i++) {
             String first = "First" + i;
@@ -57,20 +64,24 @@ public class CollectionBenchmark {
             plainSet.add(new PlainPerson(first, last, i, email, city));
             lombokSet.add(new LombokPerson(first, last, i, email, city));
             recordSet.add(new RecordPerson(first, last, i, email, city));
+            commonsSet.add(new CommonsPerson(first, last, i, email, city));
 
             plainMap.put(new PlainPerson(first, last, i, email, city), i);
             lombokMap.put(new LombokPerson(first, last, i, email, city), i);
             recordMap.put(new RecordPerson(first, last, i, email, city), i);
+            commonsMap.put(new CommonsPerson(first, last, i, email, city), i);
         }
 
         int mid = size / 2;
         plainHit = new PlainPerson("First" + mid, "Last" + mid, mid, "email%d@test.com".formatted(mid), "City" + (mid % 50));
         lombokHit = new LombokPerson("First" + mid, "Last" + mid, mid, "email%d@test.com".formatted(mid), "City" + (mid % 50));
         recordHit = new RecordPerson("First" + mid, "Last" + mid, mid, "email%d@test.com".formatted(mid), "City" + (mid % 50));
+        commonsHit = new CommonsPerson("First" + mid, "Last" + mid, mid, "email%d@test.com".formatted(mid), "City" + (mid % 50));
 
         plainMiss = new PlainPerson("Missing", "Person", -1, "nope@test.com", "Nowhere");
         lombokMiss = new LombokPerson("Missing", "Person", -1, "nope@test.com", "Nowhere");
         recordMiss = new RecordPerson("Missing", "Person", -1, "nope@test.com", "Nowhere");
+        commonsMiss = new CommonsPerson("Missing", "Person", -1, "nope@test.com", "Nowhere");
     }
 
     // --- Set.contains (hit) ---
@@ -90,6 +101,11 @@ public class CollectionBenchmark {
         return recordSet.contains(recordHit);
     }
 
+    @Benchmark
+    public boolean commonsSetContainsHit() {
+        return commonsSet.contains(commonsHit);
+    }
+
     // --- Set.contains (miss) ---
 
     @Benchmark
@@ -105,6 +121,11 @@ public class CollectionBenchmark {
     @Benchmark
     public boolean recordSetContainsMiss() {
         return recordSet.contains(recordMiss);
+    }
+
+    @Benchmark
+    public boolean commonsSetContainsMiss() {
+        return commonsSet.contains(commonsMiss);
     }
 
     // --- Map.get (hit) ---
@@ -124,6 +145,11 @@ public class CollectionBenchmark {
         return recordMap.get(recordHit);
     }
 
+    @Benchmark
+    public Integer commonsMapGetHit() {
+        return commonsMap.get(commonsHit);
+    }
+
     // --- Map.get (miss) ---
 
     @Benchmark
@@ -139,6 +165,11 @@ public class CollectionBenchmark {
     @Benchmark
     public Integer recordMapGetMiss() {
         return recordMap.get(recordMiss);
+    }
+
+    @Benchmark
+    public Integer commonsMapGetMiss() {
+        return commonsMap.get(commonsMiss);
     }
 
     public static void main(String[] args) throws Exception {
